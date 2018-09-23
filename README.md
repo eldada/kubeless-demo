@@ -161,68 +161,11 @@ $ curl --data '{"Another": "Echo"}' \
 ```
 
 
-
-
-
-
-
-
-## NodeJS sample function
-A sample nodejs function in [demo-node.js](functions/demo-node.js)
-
-Deploy function
-```bash
-$ kubeless function deploy demo-node \
-        --runtime nodejs6 \
-        --handler demo-node.hello \ 
-        --from-file functions/demo-node.js
-
-# See functions
-$ kubectl get functions
-
-$ kubeless function ls
-```
-
-Run function
-```bash
-# Using kubeless CLI
-$ kubeless function call demo-node --data 'Hello world!'
-
-# Using http
-$ kubectl proxy -p 8080 &
-$ curl -L --data '{"Another": "Echo"}' \
-    --header "Content-Type:application/json" \
-    localhost:8080/api/v1/namespaces/default/services/demo-node:http-function-port/proxy/
-
-# Create a http trigger to get-python function:
-$ kubeless trigger http create demo-node --function-name demo-node
-$ kubectl get ing
-
-# Test the created http trigger with the following command:
-$ curl --data '{"Another": "Echo"}' \
-    --header "Host: demo-node.192.168.99.100.nip.io" \
-    --header "Content-Type:application/json" \
-    192.168.99.100
-
-
-# Kubeless creates a default hostname in form of ..nip.io.
-# Alternatively, you can provide a real hostname with --hostname flag or use a different --path like this:
-$ kubeless trigger http create demo-node-hostname --function-name demo-node --path demo-node --hostname example.com
-$ kubectl get ing
-
-# Test the created http trigger with the following command:
-$ curl --data '{"Another": "Echo"}' \
-    --header "Host: example.com" \
-    --header "Content-Type:application/json" \
-    192.168.99.100/demo-node
-```
-
-
 ## Clean up
 You can delete the functions and uninstall Kubeless:
 ```bash
 $ kubeless function delete demo-python
-$ kubeless function delete demo-node
+$ kubeless function delete demo-java
 ```
 
 Delete kubeless
