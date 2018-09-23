@@ -1,5 +1,5 @@
 # Serverless on Kubernetes with Kubeless
-This repository has a basic demo of running serverless on Kubernetes using [Kubeless](https://github.com/kubeless/kubeless).
+This repository has a basic step-by-step demo of running serverless functions on [Kubernetes](https://kubernetes.io/) using [Kubeless](https://github.com/kubeless/kubeless).
 
 The demo includes deploying Kubeless to [Minikube](https://github.com/kubernetes/minikube) and deploying two example functions.
 
@@ -129,7 +129,7 @@ $ kubeless function ls
 Run function
 ```bash
 # Using kubeless CLI
-$ kubeless function call demo-java --data 'Hello world!'
+$ kubeless function call demo-java --data 'Hello java world!'
 
 # Using http
 $ kubectl proxy -p 8080 &
