@@ -96,7 +96,7 @@ $ kubectl get ing
 
 # Test the created http trigger with the following command:
 $ curl --data '{"Another": "python"}' \
-    --header "Host: demo-python.192.168.99.100.nip.io" \
+    --header "Host: demo-python.${MINIKUBE_IP}.nip.io" \
     --header "Content-Type:application/json" \
     ${MINIKUBE_IP}
 
