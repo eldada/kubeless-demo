@@ -181,5 +181,5 @@ $ kubeless function delete demo-java
 
 Delete kubeless
 ```bash
-$ kubectl delete -f https://github.com/kubeless/kubeless/releases/download/$RELEASE/kubeless-$RELEASE.yaml
+$ kubectl delete -f https://github.com/kubeless/kubeless/releases/download/${RELEASE}/kubeless-${RELEASE}.yaml
 ```
