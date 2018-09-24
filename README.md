@@ -22,6 +22,9 @@ $ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.28.2/min
 $ minikube start --extra-config=apiserver.authorization-mode=RBAC
 $ kubectl create clusterrolebinding add-on-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
 
+# Get Minikube's IP
+$ MINIKUBE_IP=$(minikube ip)
+
 # Enable ingress controller
 $ minikube addons enable ingress
 
@@ -35,7 +38,7 @@ Deploy Kubeless
 # Deploy the kubeless resources
 $ export RELEASE=$(curl -s https://api.github.com/repos/kubeless/kubeless/releases/latest | grep tag_name | cut -d '"' -f 4)
 $ kubectl create ns kubeless
-$ kubectl create -f https://github.com/kubeless/kubeless/releases/download/$RELEASE/kubeless-$RELEASE.yaml
+$ kubectl create -f https://github.com/kubeless/kubeless/releases/download/${RELEASE}/kubeless-${RELEASE}.yaml
 
 
 # See kubeless pod
@@ -95,7 +98,7 @@ $ kubectl get ing
 $ curl --data '{"Another": "python"}' \
     --header "Host: demo-python.192.168.99.100.nip.io" \
     --header "Content-Type:application/json" \
-    192.168.99.100
+    ${MINIKUBE_IP}
 
 
 # Kubeless creates a default hostname in form of ..nip.io.
@@ -107,7 +110,7 @@ $ kubectl get ing
 $ curl --data '{"Another": "python"}' \
     --header "Host: example.com" \
     --header "Content-Type:application/json" \
-    192.168.99.100/demo-python
+    ${MINIKUBE_IP}/demo-python
 ```
 
 ## Java sample function
@@ -143,9 +146,9 @@ $ kubectl get ing
 
 # Test the created http trigger with the following command:
 $ curl --data '{"Another": "Echo"}' \
-    --header "Host: demo-java.192.168.99.100.nip.io" \
+    --header "Host: demo-java.${MINIKUBE_IP}.nip.io" \
     --header "Content-Type:application/json" \
-    192.168.99.100
+    ${MINIKUBE_IP}
 
 
 # Kubeless creates a default hostname in form of ..nip.io.
@@ -157,7 +160,7 @@ $ kubectl get ing
 $ curl --data '{"Another": "Echo"}' \
     --header "Host: example.com" \
     --header "Content-Type:application/json" \
-    192.168.99.100/demo-java
+    ${MINIKUBE_IP}/demo-java
 ```
 
 
