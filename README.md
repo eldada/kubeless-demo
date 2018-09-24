@@ -3,15 +3,18 @@ This repository has a basic step-by-step demo of running serverless functions on
 
 The demo includes deploying Kubeless to [Minikube](https://github.com/kubernetes/minikube) and deploying two example functions.
 
-# Runtimes
+# Function runtimes
 Kubeless supports multiple run times for its functions.
 ```bash
-Supported Runtimes are: python2.7, python3.4, python3.6, nodejs6, nodejs8, nodejs_distroless8, ruby2.4, php7.2, go1.10, dotnetcore2.0, java1.8, ballerina0.981.0, jvm1.8 
+Supported Runtimes are:
+python2.7, python3.4, python3.6, nodejs6, nodejs8, nodejs_distroless8, ruby2.4, php7.2, go1.10, dotnetcore2.0, java1.8, ballerina0.981.0, jvm1.8
 ```
-See details in [Kubeless runtimes documentation](https://kubeless.io/docs/runtimes/)  
+See more details in [Kubeless runtimes documentation](https://kubeless.io/docs/runtimes/)
 
 
 # Demo
+Below is the step-by-step demo of setting up local Kubernetes with Minikube, deploying Kubeless and functions.
+
 ## Setup Kubernetes with Minikube
 Startup a local Kubernetes 1 node cluster with Minikube.
 ```bash
@@ -22,7 +25,7 @@ $ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.28.2/min
 $ minikube start --extra-config=apiserver.authorization-mode=RBAC
 $ kubectl create clusterrolebinding add-on-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
 
-# Get Minikube's IP
+# Get Minikube's IP (used later in the demo)
 $ MINIKUBE_IP=$(minikube ip)
 
 # Enable ingress controller
@@ -39,8 +42,10 @@ Deploy Kubeless
 $ export RELEASE=$(curl -s https://api.github.com/repos/kubeless/kubeless/releases/latest | grep tag_name | cut -d '"' -f 4)
 $ kubectl create ns kubeless
 $ kubectl create -f https://github.com/kubeless/kubeless/releases/download/${RELEASE}/kubeless-${RELEASE}.yaml
+```
 
-
+You can see the Kubernetes objects created by Kubeless
+```bash
 # See kubeless pod
 $ kubectl get pods -n kubeless
 
@@ -49,18 +54,21 @@ $ kubectl get deployment -n kubeless
 
 # See kubeless CRDs
 $ kubectl get customresourcedefinition
+```
 
-
+Install the `kubeless` CLI for easy interaction with the framework
+```bash
 # Installing kubeless CLI using execute:
 $ export OS=$(uname -s| tr '[:upper:]' '[:lower:]')
-$ curl -OL https://github.com/kubeless/kubeless/releases/download/$RELEASE/kubeless_$OS-amd64.zip && \
-    unzip kubeless_$OS-amd64.zip && \
-    sudo mv bundles/kubeless_$OS-amd64/kubeless /usr/local/bin/
+$ curl -OL https://github.com/kubeless/kubeless/releases/download/${RELEASE}/kubeless_${OS}-amd64.zip && \
+    unzip kubeless_${OS}-amd64.zip && \
+    sudo mv bundles/kubeless_${OS}-amd64/kubeless /usr/local/bin/
+
+# Check version
+$ kubeless version
 
 # See supported run-times
 $ kubeless get-server-config
-INFO[0000] Current Server Config:                       
-INFO[0000] Supported Runtimes are: python2.7, python3.4, python3.6, nodejs6, nodejs8, nodejs_distroless8, ruby2.4, php7.2, go1.10, dotnetcore2.0, java1.8, ballerina0.981.0, jvm1.8 
 ```
 
 ## Python sample function
