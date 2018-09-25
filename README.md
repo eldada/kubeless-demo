@@ -19,11 +19,15 @@ Below is the step-by-step demo of setting up local Kubernetes with Minikube, dep
 Startup a local Kubernetes 1 node cluster with Minikube.
 ```bash
 # Install Minikube v0.28.2
-$ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.28.2/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+$ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.28.2/minikube-darwin-amd64 && \
+        chmod +x minikube && \
+        sudo mv minikube /usr/local/bin/
 
 # Start up an RBAC enabled Minikube (v0.28.2)
 $ minikube start --extra-config=apiserver.authorization-mode=RBAC
-$ kubectl create clusterrolebinding add-on-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
+$ kubectl create clusterrolebinding add-on-cluster-admin \
+        --clusterrole=cluster-admin \
+        --serviceaccount=kube-system:default
 
 # Get Minikube's IP (used later in the demo)
 $ MINIKUBE_IP=$(minikube ip)
@@ -38,9 +42,9 @@ $ kubectl get pod -n kube-system -l app=nginx-ingress-controller
 ## Setup Kubeless
 Deploy Kubeless
 ```bash
-# Deploy the kubeless resources
-$ export RELEASE=$(curl -s https://api.github.com/repos/kubeless/kubeless/releases/latest | grep tag_name | cut -d '"' -f 4)
+# Deploy the kubeless resources to the kubeless namespace
 $ kubectl create ns kubeless
+$ export RELEASE=$(curl -s https://api.github.com/repos/kubeless/kubeless/releases/latest | grep tag_name | cut -d '"' -f 4)
 $ kubectl create -f https://github.com/kubeless/kubeless/releases/download/${RELEASE}/kubeless-${RELEASE}.yaml
 ```
 
@@ -61,8 +65,8 @@ Install the `kubeless` CLI for easy interaction with the framework
 # Installing kubeless CLI using execute:
 $ export OS=$(uname -s| tr '[:upper:]' '[:lower:]')
 $ curl -OL https://github.com/kubeless/kubeless/releases/download/${RELEASE}/kubeless_${OS}-amd64.zip && \
-    unzip kubeless_${OS}-amd64.zip && \
-    sudo mv bundles/kubeless_${OS}-amd64/kubeless /usr/local/bin/
+        unzip kubeless_${OS}-amd64.zip && \
+        sudo mv bundles/kubeless_${OS}-amd64/kubeless /usr/local/bin/
 
 # Check version
 $ kubeless version
@@ -94,20 +98,19 @@ $ kubeless function call demo-python --data 'Hello python world!'
 
 # Using http
 $ kubectl proxy -p 8080 &
-$ curl -L --data '{"Another": "python"}' \
-    --header "Content-Type:application/json" \
-    localhost:8080/api/v1/namespaces/default/services/demo-python:http-function-port/proxy/
+$ curl -L --data '{"Python": "Kube API"}' \
+        --header "Content-Type:application/json" \
+        localhost:8080/api/v1/namespaces/default/services/demo-python:http-function-port/proxy/
 
 # Create a http trigger to get-python function:
 $ kubeless trigger http create demo-python --function-name demo-python
 $ kubectl get ing
 
 # Test the created http trigger with the following command:
-$ curl --data '{"Another": "python"}' \
-    --header "Host: demo-python.${MINIKUBE_IP}.nip.io" \
-    --header "Content-Type:application/json" \
-    ${MINIKUBE_IP}
-
+$ curl --data '{"Python": "Ingress"}' \
+        --header "Host: demo-python.${MINIKUBE_IP}.nip.io" \
+        --header "Content-Type:application/json" \
+        ${MINIKUBE_IP}
 
 # Kubeless creates a default hostname in form of ..nip.io.
 # Alternatively, you can provide a real hostname with --hostname flag or use a different --path like this:
@@ -115,21 +118,21 @@ $ kubeless trigger http create demo-python-hostname --function-name demo-python 
 $ kubectl get ing
 
 # Test the created http trigger with the following command:
-$ curl --data '{"Another": "python"}' \
-    --header "Host: example.com" \
-    --header "Content-Type:application/json" \
-    ${MINIKUBE_IP}/demo-python
+$ curl --data '{"Python": "Ingress", "With": "Host"}' \
+        --header "Host: example.com" \
+        --header "Content-Type:application/json" \
+        ${MINIKUBE_IP}/demo-python
 ```
 
 ## Java sample function
-A sample nodejs function in [demo-java.java](functions/demo-java.java)
+A sample Java function in [demo-java.java](functions/demo-java.java)
 
 Deploy function
 ```bash
 $ kubeless function deploy demo-java \
-                --runtime java1.8 \
-                --handler Demo.hello \
-                --from-file functions/demo-java.java
+        --runtime java1.8 \
+        --handler Demo.hello \
+        --from-file functions/demo-java.java
 
 # See functions
 $ kubectl get functions
@@ -144,20 +147,19 @@ $ kubeless function call demo-java --data 'Hello java world!'
 
 # Using http
 $ kubectl proxy -p 8080 &
-$ curl -L --data '{"Another": "Echo"}' \
-    --header "Content-Type:application/json" \
-    localhost:8080/api/v1/namespaces/default/services/demo-java:http-function-port/proxy/
+$ curl -L --data '{"Java": "Kube API"}' \
+        --header "Content-Type:application/json" \
+        localhost:8080/api/v1/namespaces/default/services/demo-java:http-function-port/proxy/
 
 # Create a http trigger to get-python function:
 $ kubeless trigger http create demo-java --function-name demo-java
 $ kubectl get ing
 
 # Test the created http trigger with the following command:
-$ curl --data '{"Another": "Echo"}' \
-    --header "Host: demo-java.${MINIKUBE_IP}.nip.io" \
-    --header "Content-Type:application/json" \
-    ${MINIKUBE_IP}
-
+$ curl --data '{"Java": "Ingress"}' \
+        --header "Host: demo-java.${MINIKUBE_IP}.nip.io" \
+        --header "Content-Type:application/json" \
+        ${MINIKUBE_IP}
 
 # Kubeless creates a default hostname in form of ..nip.io.
 # Alternatively, you can provide a real hostname with --hostname flag or use a different --path like this:
@@ -165,10 +167,10 @@ $ kubeless trigger http create demo-java-hostname --function-name demo-java --pa
 $ kubectl get ing
 
 # Test the created http trigger with the following command:
-$ curl --data '{"Another": "Echo"}' \
-    --header "Host: example.com" \
-    --header "Content-Type:application/json" \
-    ${MINIKUBE_IP}/demo-java
+$ curl --data '{"Java": "Ingress", "With": "Host"}' \
+        --header "Host: example.com" \
+        --header "Content-Type:application/json" \
+        ${MINIKUBE_IP}/demo-java
 ```
 
 
