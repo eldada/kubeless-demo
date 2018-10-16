@@ -16,7 +16,7 @@ See more details in [Kubeless runtimes documentation](https://kubeless.io/docs/r
 Below is the step-by-step demo of setting up local Kubernetes with Minikube, deploying Kubeless and functions.
 
 ## Setup Kubernetes with Minikube
-Startup a local Kubernetes 1 node cluster with Minikube.
+Startup a local Kubernetes 1 node cluster with Minikube (this example is for Mac OS).
 ```bash
 # Install Minikube v0.28.2
 $ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.28.2/minikube-darwin-amd64 && \
@@ -78,7 +78,7 @@ $ kubeless get-server-config
 ## Python sample function
 A sample python function in [demo-python.py](functions/demo-python.py)
 
-Deploy function
+### Deploy function
 ```bash
 $ kubeless function deploy demo-python \
         --runtime python2.7 \
@@ -91,7 +91,7 @@ $ kubectl get functions
 $ kubeless function ls
 ```
 
-Run function
+### Run function
 ```bash
 # Using kubeless CLI
 $ kubeless function call demo-python --data 'Hello python world!'
@@ -127,7 +127,7 @@ $ curl --data '{"Python": "Ingress", "With": "Host"}' \
 ## Java sample function
 A sample Java function in [demo-java.java](functions/demo-java.java)
 
-Deploy function
+### Deploy function
 ```bash
 $ kubeless function deploy demo-java \
         --runtime java1.8 \
@@ -140,7 +140,7 @@ $ kubectl get functions
 $ kubeless function ls
 ```
 
-Run function
+### Run function
 ```bash
 # Using kubeless CLI
 $ kubeless function call demo-java --data 'Hello java world!'
